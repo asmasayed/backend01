@@ -34,4 +34,6 @@ class UserRepo(BaseRepository):
             id:int
     )->User:
         user=self.session.query(User).filter(User.id==id).first()
-        return user
+        return user    
+
+    
