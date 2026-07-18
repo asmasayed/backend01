@@ -4,6 +4,7 @@ from ..database.repository.userRepo import UserRepo
 from ..database.schemas.user import UserCreate,UserResponse,UserLogin, UserToken
 from ..core.security.hashHelper import hash_password,verify_password
 from ..core.security.authHelper import AuthHelper
+from fastapi.security import OAuth2PasswordRequestForm
 
 
 class UserService:
@@ -27,22 +28,20 @@ class UserService:
     
     def login(
             self,
-            user_details:UserLogin
+            form_data:OAuth2PasswordRequestForm
     ):
-        if not self.__userRepository.check_user_by_email(user_details.email):
+        if not self.__userRepository.check_user_by_email(form_data.username):
             raise HTTPException(status_code=400,detail={"User Not Found"})
         
         #get user details
-        user_data=self.__userRepository.get_user_by_email(user_details.email)
+        user_data=self.__userRepository.get_user_by_email(form_data.username)
 
         #verify password
-        if not verify_password(user_details.password,user_data.hashed_password):
+        if not verify_password(form_data.password,user_data.hashed_password):
             raise HTTPException(status_code=401,detail="Incorrect credentials")
         
         #generate token
-        token=AuthHelper.sign_jwt(user_data.id)
+        token=AuthHelper.sign_jwt(user_data)
         if token:
-            return UserToken(token=token) #As UserToken is a pydantic model it requires keyword args
+            return {"access_token": token, "token_type": "bearer"} #As UserToken is a pydantic model it requires keyword args
         raise HTTPException(status_code=500,detail="Unable to process request")
-    
-      

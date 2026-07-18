@@ -3,6 +3,7 @@ from pydantic import BaseModel, EmailStr,ConfigDict
 class UserBase(BaseModel):
     name:str
     email:EmailStr
+    role:str="user"
 
 class UserCreate(UserBase):
     hashed_password:str
@@ -17,4 +18,5 @@ class UserLogin(BaseModel):
     password:str
 
 class UserToken(BaseModel):
-    token:str
+    access_token:str
+    token_type:str = "bearer"
