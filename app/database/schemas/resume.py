@@ -36,4 +36,4 @@ class ResumeUploadResponse(BaseModel):
 class CloudinaryUploadResult(BaseModel):
     #returns metadata that was saved in db
     secure_url:str
-    public_id:int
+    public_id:str

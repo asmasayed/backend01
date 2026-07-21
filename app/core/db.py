@@ -15,6 +15,9 @@ SessionLocal=sessionmaker(
 )
 
 Base=declarative_base()
+from ..database.models.user import User
+from ..database.models.resume import Resume 
+
 
 def get_db():
     db=SessionLocal()
